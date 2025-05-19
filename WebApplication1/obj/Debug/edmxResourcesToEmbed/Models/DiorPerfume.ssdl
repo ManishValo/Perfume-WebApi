@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DiorDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Bill">
+    <Key>
+      <PropertyRef Name="BillID" />
+    </Key>
+    <Property Name="BillID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="BillDate" Type="datetime" />
+    <Property Name="BillAmt" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BillDetails">
+    <Key>
+      <PropertyRef Name="BillDetailsID" />
+    </Key>
+    <Property Name="BillDetailsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BillID" Type="int" Nullable="false" />
+    <Property Name="PerfumeID" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="UnitPrice" Type="int" Nullable="false" />
+    <Property Name="TotalPrice" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Cart">
+    <Key>
+      <PropertyRef Name="CartID" />
+    </Key>
+    <Property Name="CartID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="PerfumeID" Type="int" Nullable="false" />
+    <Property Name="CartQty" Type="int" Nullable="false" />
+    <Property Name="TotalPrice" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="CategoryID" />
+    </Key>
+    <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CategoryName" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Perfume">
+    <Key>
+      <PropertyRef Name="PerfumeID" />
+    </Key>
+    <Property Name="PerfumeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PerfumeName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="PerfumeImg" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="PerfumePrice" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="PerfumeQuantity" Type="int" Nullable="false" />
+    <Property Name="PerfumeDescription" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="PerfumeCatID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserDetails">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="UserEmail" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserPassword" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="MobileNo" Type="varchar" MaxLength="30" />
+    <Property Name="Address" Type="varchar" MaxLength="200" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+    <Property Name="Pincode" Type="varchar" MaxLength="10" />
+    <Property Name="TypeId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserType">
+    <Key>
+      <PropertyRef Name="TypeId" />
+    </Key>
+    <Property Name="TypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TypeName" Type="varchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Bill__UserID__5441852A">
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserDetails">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Bill">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BillDetai__BillI__59063A47">
+    <End Role="Bill" Type="Self.Bill" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BillDetails" Type="Self.BillDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Bill">
+        <PropertyRef Name="BillID" />
+      </Principal>
+      <Dependent Role="BillDetails">
+        <PropertyRef Name="BillID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BillDetai__Perfu__59FA5E80">
+    <End Role="Perfume" Type="Self.Perfume" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BillDetails" Type="Self.BillDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Perfume">
+        <PropertyRef Name="PerfumeID" />
+      </Principal>
+      <Dependent Role="BillDetails">
+        <PropertyRef Name="PerfumeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart__PerfumeID__4F7CD00D">
+    <End Role="Perfume" Type="Self.Perfume" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Perfume">
+        <PropertyRef Name="PerfumeID" />
+      </Principal>
+      <Dependent Role="Cart">
+        <PropertyRef Name="PerfumeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart__UserID__4E88ABD4">
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserDetails">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Cart">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Perfume__Perfume__2E1BDC42">
+    <End Role="Category" Type="Self.Category" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Perfume" Type="Self.Perfume" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="CategoryID" />
+      </Principal>
+      <Dependent Role="Perfume">
+        <PropertyRef Name="PerfumeCatID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserDetai__TypeI__4BAC3F29">
+    <End Role="UserType" Type="Self.UserType" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserType">
+        <PropertyRef Name="TypeId" />
+      </Principal>
+      <Dependent Role="UserDetails">
+        <PropertyRef Name="TypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DiorDBModelStoreContainer">
+    <EntitySet Name="Bill" EntityType="Self.Bill" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BillDetails" EntityType="Self.BillDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Perfume" EntityType="Self.Perfume" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserDetails" EntityType="Self.UserDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Bill__UserID__5441852A" Association="Self.FK__Bill__UserID__5441852A">
+      <End Role="UserDetails" EntitySet="UserDetails" />
+      <End Role="Bill" EntitySet="Bill" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BillDetai__BillI__59063A47" Association="Self.FK__BillDetai__BillI__59063A47">
+      <End Role="Bill" EntitySet="Bill" />
+      <End Role="BillDetails" EntitySet="BillDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BillDetai__Perfu__59FA5E80" Association="Self.FK__BillDetai__Perfu__59FA5E80">
+      <End Role="Perfume" EntitySet="Perfume" />
+      <End Role="BillDetails" EntitySet="BillDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart__PerfumeID__4F7CD00D" Association="Self.FK__Cart__PerfumeID__4F7CD00D">
+      <End Role="Perfume" EntitySet="Perfume" />
+      <End Role="Cart" EntitySet="Cart" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart__UserID__4E88ABD4" Association="Self.FK__Cart__UserID__4E88ABD4">
+      <End Role="UserDetails" EntitySet="UserDetails" />
+      <End Role="Cart" EntitySet="Cart" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Perfume__Perfume__2E1BDC42" Association="Self.FK__Perfume__Perfume__2E1BDC42">
+      <End Role="Category" EntitySet="Category" />
+      <End Role="Perfume" EntitySet="Perfume" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserDetai__TypeI__4BAC3F29" Association="Self.FK__UserDetai__TypeI__4BAC3F29">
+      <End Role="UserType" EntitySet="UserType" />
+      <End Role="UserDetails" EntitySet="UserDetails" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

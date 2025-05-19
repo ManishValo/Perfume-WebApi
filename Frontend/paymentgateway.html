@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Form</title>
+  <!-- <link rel="stylesheet" href="style.css" /> -->
+  <link rel="stylesheet" href="./Css/paymentgateway.css" />
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header class="nav-bar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <img src="./Images/image-removebg-preview (1).png" alt="Logo" class="logo" />
+        <h1 class="brand">Dior</h1>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <p id="user-info" style="font-weight: 600; margin-bottom: 10px;"></p>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Payment Form Container -->
+  <main class="container">
+    <h1>Payment Form</h1>
+    <div class="form">
+        <p id="user-info" style="margin-bottom: 10px;"></p>
+        <div class="left">
+        <form id="payment-form">
+          <label for="full-name">Full Name:</label>
+          <input type="text" name="name" id="full-name" placeholder="Enter Full Name" />
+
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" placeholder="Enter Email" />
+
+          <label for="address">Address:</label>
+          <textarea id="address" rows="3" placeholder="Enter your address..."></textarea>
+
+          <div class="city-pincode-row">
+            <div>
+              <label for="city">City:</label>
+              <input type="text" id="city" placeholder="City" />
+            </div>
+            <div>
+              <label for="pincode">Pincode:</label>
+              <input type="text" id="pincode" placeholder="Pincode" />
+            </div>
+          </div>
+      </div>
+
+      <div class="right">
+        <label>Payment Method:</label>
+        <div class="payment-method">
+          <label><input type="radio" name="payment" /> Credit Card</label>
+          <label><input type="radio" name="payment" /> Debit Card</label>
+        </div>
+
+        <label for="name">Name on Card:</label>
+        <input type="text" id="name" placeholder="Name on Card" />
+
+        <label for="cardnumber">Card Number:</label>
+        <input type="text" id="cardnumber" placeholder="Card Number" />
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="CVV" />
+
+        <label for="cardexpiry">Card Expiry Details:</label>
+        <input type="month" id="cardexpiry" min="2025-05">
+        <!-- <input type="date" id="cardexpiry" /> -->
+
+        <label for="otp">OTP:</label>
+        <input type="text" id="otp" placeholder="Enter OTP" />
+
+        <button type="button" id="pay-btn">Proceed Payment</button>
+      </div>
+        </form>
+    </div>
+  </main>
+
+  
+  <script src="./JS/payment.js"></script>
+</body>
+
+</html>

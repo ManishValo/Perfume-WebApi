@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfume Paradise</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="./Css/style.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <section>
+      <h1 id="title">Welcome to Perfume Paradise</h1>
+    </section>
+  </header>
+
+  <nav class="nav-bar">
+    <div class="left">
+      <div class="icon">
+        <a href="index.html" style="text-decoration: none;">
+          <h1 style="display: flex; align-items: center;">
+            <span><img src="./Images/image-removebg-preview (1).png" alt="logo" style="width: 80px;"></span>Dior
+          </h1>
+        </a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav class="nav-links" id="navLinks">
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li class="dropdown">
+            <a href="#">Categories <i class="fa fa-caret-down"></i></a>
+            <div class="dropdown-content">
+              <a href="#" onclick="showCategory('everyday')">EveryDay</a>
+              <a href="#" onclick="showCategory('luxury')">Luxury</a>
+              <a href="#" onclick="showCategory('nightScents')">Night Scents</a>
+              <a href="#" onclick="showCategory('bodyMists')">Body Mists</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search perfumes...">
+        <button id="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+
+    </div>
+    <div class="middle" id="cart-section">
+      <a href="./cart.html"><i class="fa fa-cart-plus"></i></a>
+    </div>
+    <div class="right" id="user-section">
+        
+    <!-- This div will be dynamically updated by JS -->
+    </div>
+
+
+  </nav>
+
+
+  <!-- Main Section -->
+  <main class="main-content">
+    <section class="video-container">
+      <video width="380" height="240" autoplay muted loop>
+        <source src="./Images/13511496_3840_2160_25fps.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </section>
+
+    <section id="product-container" class="product-container">
+      <!-- products will be inserted here -->
+    </section>
+
+
+    <section id="innovation-section"
+      style="display: flex; align-items: center; justify-content: center; padding: 50px; background: #f9f9f9;">
+      <img src="./Images/interior_store_image.webp" alt="Perfume Innovation">
+
+      <div style="max-width: 50%;">
+        <h2 style="font-size: 2rem; color: #333; margin-bottom: 15px;">Revolutionizing Fragrance with Innovation</h2>
+        <p>
+          At <strong>Dior</strong>, we believe fragrance is an art. Our new line is crafted using
+          cutting-edge aroma molecules,
+          sustainable extraction techniques, and AI-driven scent profiling to deliver a unique and personalized
+          olfactory experience.
+        </p>
+        <p>
+          Experience the fusion of nature and science with our luxurious yet eco-conscious perfumes — designed to make
+          you feel confident, bold, and unforgettable.
+        </p>
+        <button>
+          Explore Our Collection
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- Footer -->
+  <footer class="footer-class">
+    <div class="fo">
+      <div class="col">
+        <h4>Company</h4>
+        <ul>
+          <li>About Us</li>
+          <li>Blogs</li>
+          <li>Testimonials</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li>Offer Zone</li>
+          <li>New Launches</li>
+          <li>SiteMap</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Help</h4>
+        <ul>
+          <li>FAQ's</li>
+          <li>Cancelled and Return</li>
+          <li>Ship and Delivery</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Contact Us</h4>
+        <ul>
+          <li>Chat with us</li>
+          <li>Have a Call</li>
+          <li>Mail us</li>
+        </ul>
+      </div>
+    </div>
+    <div class="social-icons">
+      <i class="fa-brands fa-instagram"></i>
+      <i class="fa-brands fa-facebook"></i>
+      <i class="fa-brands fa-x-twitter"></i>
+    </div>
+
+    <p style="text-align: center;">&copy; 2025 Perfume Paradise | All Rights Reserved</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./JS/app.js"></script>
+
+
+</body>
+
+</html>

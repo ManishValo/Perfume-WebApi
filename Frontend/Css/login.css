@@ -1,0 +1,84 @@
+body {
+  height: 100vh;
+  background-color: #f6f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  display: flex;
+  width: 850px;
+  height: 450px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.login-left {
+  background-color: #ab9eff;
+  color: white;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.login-left img {
+  max-width: 140px;
+  margin-bottom: 1rem;
+}
+
+.login-left h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.login-right {
+  width: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-control {
+  padding-right: 2.5rem;
+}
+
+.toggle-eye {
+  position: absolute;
+  top: 72%;
+  right: 41px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-login {
+  background-color: #6a5acd;
+  color: white;
+}
+
+.btn-create {
+  background-color: #228b22;
+  color: white;
+}
+
+.btn-create:hover,
+.btn-login:hover {
+  opacity: 0.9;
+}

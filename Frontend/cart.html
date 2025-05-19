@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfume Paradise - Cart</title>
+  <link rel="stylesheet" href="./Css/style.css" />
+  <link rel="stylesheet" href="./Css/cart.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <!-- <header>
+    <a href="cart.html" style="position: relative; margin-left: 20px;">
+  <i class="fas fa-shopping-cart fa-lg" style="color: #fff;"></i>
+  <span id="cart-count" style="
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 7px;
+      font-size: 12px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      display: none;
+  ">0</span>
+</a> -->
+
+
+
+<header>
+    <section>
+      <h1 id="title">Dior</h1>
+    </section>
+  </header>
+
+<nav class="nav-bar">
+      <div class="left">
+        <div class="icon">
+          <a href="index.html" style="text-decoration: none;">
+            <h1 style="display: flex; align-items: center;">
+              <img src="./Images/image-removebg-preview (1).png" alt="logo" style="width: 80px;" />
+              Dior
+            </h1>
+          </a>
+        </div>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="right" id="user-section">
+        <!-- Filled dynamically by JS -->
+      </div>
+    </nav>
+
+  <!-- Main Section -->
+  <main>
+    <section class="cart-container">
+      <h2 class="cart-title"><i class="fas fa-shopping-cart"></i> Your Cart</h2>
+      
+      <div id="cart-items-container"></div>
+      <div id="empty-cart-message" class="empty-cart-message">Your cart is empty.</div>
+      
+      <div id="cart-total" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <p id="cart-total-amount"></p>
+        <button id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Perfume Paradise | All Rights Reserved</p>
+  </footer>
+
+  <script src="./JS/cart.js"></script>
+</body>
+</html>
