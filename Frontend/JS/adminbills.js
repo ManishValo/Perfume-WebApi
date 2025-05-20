@@ -2,31 +2,31 @@
   const BASE_URL = "http://localhost:60565/api/bill";
 
   function loadBills() {
-    $.ajax({
-      url: BASE_URL,
-      method: "GET",
-      success: function (data) {
-        let rows = "";
-        data.forEach(bill => {
-          rows += `
-            <tr>
-              <td>${bill.BillID}</td>
-              <td>${bill.UserID}</td>
-              <td>${bill.CustomerName}</td>
-              <td>
-                <button class="btn btn-sm btn-info" onclick="viewBill(${bill.BillID})">View</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteBill(${bill.BillID})">Delete</button>
-              </td>
-            </tr>
-          `;
-        });
-        $("#billTable tbody").html(rows);
-      },
-      error: function () {
-        alert("Error loading bill data.");
-      }
-    });
-  }
+  $.ajax({
+    url: BASE_URL,
+    method: "GET",
+    success: function (data) {
+      let rows = "";
+      data.forEach(bill => {
+        rows += `
+          <tr>
+            <td>${bill.BillID}</td>
+            <td>${bill.UserID}</td>
+            <td>${bill.CustomerName}</td>
+            <td>
+              <button class="btn btn-sm btn-info" onclick="viewBill(${bill.BillID})">View</button>
+            </td>
+          </tr>
+        `;
+      });
+      $("#billTable tbody").html(rows);
+    },
+    error: function () {
+      alert("Error loading bill data.");
+    }
+  });
+}
+
 
   function viewBill(billId) {
     $.ajax({

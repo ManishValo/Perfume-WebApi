@@ -24,7 +24,39 @@ namespace WebApplication1.ApiControllers
                     b.BillID,
                     b.UserID,
                     CustomerName = b.UserDetail.UserName,
-                    BillDate = b.BillDate,
+                    b.BillDate,
+                    b.BillAmt
+                })
+                .ToList();
+
+            return Ok(bills);
+        }
+
+        // GET: api/bill/{billId}
+        [HttpGet]
+        [Route("{billId:int}")]
+        public IHttpActionResult GetBillById(int billId)
+        {
+            var bill = db.Bills.Find(billId);
+            if (bill == null)
+                return NotFound();
+
+            return Ok(bill);
+        }
+
+        // GET: api/bill/customer/{customerId}
+        [HttpGet]
+        [Route("customer/{customerId:int}")]
+        public IHttpActionResult GetBillsByCustomer(int customerId)
+        {
+            var bills = db.Bills
+                .Where(b => b.UserID == customerId)
+                .Select(b => new
+                {
+                    b.BillID,
+                    b.UserID,
+                    CustomerName = b.UserDetail.UserName,
+                    b.BillDate,
                     b.BillAmt
                 })
                 .ToList();
@@ -38,43 +70,56 @@ namespace WebApplication1.ApiControllers
         public IHttpActionResult GetBillDetails(int billId)
         {
             var details = db.BillDetails
-                            .Where(d => d.BillID == billId)
-                            .Select(d => new
-                            {
-                                d.BillDetailsID,
-                                d.BillID,
-                                d.PerfumeID,
-                                PerfumeName = d.Perfume.PerfumeName,
-                                d.Quantity,
-                                d.UnitPrice,
-                                d.TotalPrice
-                            })
-                            .ToList();
+                .Where(d => d.BillID == billId)
+                .Select(d => new
+                {
+                    d.BillDetailsID,
+                    d.BillID,
+                    d.PerfumeID,
+                    PerfumeName = d.Perfume != null ? d.Perfume.PerfumeName : "Unknown",
+                    d.Quantity,
+                    d.UnitPrice,
+                    d.TotalPrice
+                })
+                .ToList();
 
-            if (details == null || details.Count == 0)
-                return NotFound();
-
-            return Ok(details);
+            return Ok(details); // Always return 200 with empty array if no details
         }
 
-        // DELETE: api/bill/delete/{billId}
-        [HttpDelete]
-        [Route("delete/{billId:int}")]
-        public IHttpActionResult DeleteBill(int billId)
+        // POST: api/bill/add
+        [HttpPost]
+        [Route("add")]
+        public IHttpActionResult AddBill(BillDTO billDto)
         {
-            var bill = db.Bills.Find(billId);
-            if (bill == null)
-                return NotFound();
+            if (billDto == null || billDto.Details == null || !billDto.Details.Any())
+                return BadRequest("Invalid bill data.");
 
-            // Remove bill details first
-            var details = db.BillDetails.Where(d => d.BillID == billId).ToList();
-            db.BillDetails.RemoveRange(details);
+            var bill = new Bill
+            {
+                UserID = billDto.UserID,
+                BillAmt = billDto.BillAmt,
+                BillDate = DateTime.Now
+            };
 
-            // Remove the bill
-            db.Bills.Remove(bill);
+            db.Bills.Add(bill);
             db.SaveChanges();
 
-            return Ok();
+            foreach (var item in billDto.Details)
+            {
+                var detail = new BillDetail
+                {
+                    BillID = bill.BillID,
+                    PerfumeID = item.PerfumeID,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    TotalPrice = item.TotalPrice
+                };
+                db.BillDetails.Add(detail);
+            }
+
+            db.SaveChanges();
+
+            return Ok(new { BillID = bill.BillID });
         }
     }
 }

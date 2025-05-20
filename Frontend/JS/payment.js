@@ -80,6 +80,7 @@ const userId = loggedInUser.UserID;
                     type: "DELETE",
                     success: function () {
                         alert("Payment successful! Bill ID: " + response.BillID);
+                        sessionStorage.setItem("billId", response.BillID);
                         window.location.href = "/bill.html?billId=" + response.BillID;
                     },
                     error: function () {
