@@ -23,34 +23,12 @@ namespace WebApplication1.ApiControllers
                 {
                     b.BillID,
                     b.UserID,
-                    CustomerName = b.UserDetail.UserName,   
+                    CustomerName = b.UserDetail.UserName,
                     BillDate = b.BillDate,
                     b.BillAmt
                 })
                 .ToList();
 
-            return Ok(bills);
-        }
-
-
-        // GET: api/bill/{billId}
-        [HttpGet]
-        [Route("{billId:int}")]
-        public IHttpActionResult GetBillById(int billId)
-        {
-            var bill = db.Bills.Find(billId);
-            if (bill == null)
-                return NotFound();
-
-            return Ok(bill);
-        }
-
-        // GET: api/bill/customer/{customerId}
-        [HttpGet]
-        [Route("customer/{customerId:int}")]
-        public IHttpActionResult GetBillsByCustomer(int customerId)
-        {
-            var bills = db.Bills.Where(b => b.UserID == customerId).ToList();
             return Ok(bills);
         }
 
@@ -77,6 +55,26 @@ namespace WebApplication1.ApiControllers
                 return NotFound();
 
             return Ok(details);
+        }
+
+        // DELETE: api/bill/delete/{billId}
+        [HttpDelete]
+        [Route("delete/{billId:int}")]
+        public IHttpActionResult DeleteBill(int billId)
+        {
+            var bill = db.Bills.Find(billId);
+            if (bill == null)
+                return NotFound();
+
+            // Remove bill details first
+            var details = db.BillDetails.Where(d => d.BillID == billId).ToList();
+            db.BillDetails.RemoveRange(details);
+
+            // Remove the bill
+            db.Bills.Remove(bill);
+            db.SaveChanges();
+
+            return Ok();
         }
     }
 }

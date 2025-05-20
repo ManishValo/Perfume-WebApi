@@ -1,78 +1,95 @@
-// LOGOUT FUNCTIONALITY
-document.getElementById('logout-btn').addEventListener('click', function () {
-  alert('You have been logged out.');
-  localStorage.removeItem("loggedInUser");
-  window.location.href = './index.html';
-});
+$(document).ready(function () {
+const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
+if (!loggedInUser || !loggedInUser.UserID) {
+  alert("User not logged in.");
+  window.location.href = "login.html";
+  return;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  // console.log("name"+loggedInUser?.name)
-  document.querySelector("input[name='name']").value = loggedInUser?.name
-  document.querySelector("input[name=email]").value = loggedInUser?.email
-})
+const userId = loggedInUser.UserID;
+    // Autofill name and email
+    $("#full-name").val(loggedInUser.name);
+    $("#email").val(loggedInUser.email);
 
-// PAYMENT VALIDATION AND CONFIRMATION
-document.getElementById('pay-btn').addEventListener('click', function () {
-  const cardNumber = document.getElementById('cardnumber').value.trim().replace(/\s+/g, '');
-  const cvv = document.getElementById('cvv').value.trim();
-  const expiry = document.getElementById('cardexpiry').value.trim(); // Format: YYYY-MM
+    let cartItems = [];
+    let totalAmount = 0;
 
-  // Get user details from localStorage
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  const userName = loggedInUser?.name || "User";
-  const userEmail = loggedInUser?.email || "Not available";
+    // Fetch cart data
+    $.ajax({
+        url: `http://localhost:60565/api/cart/user/${userId}`,
+        type: "GET",
+        success: function (data) {
+            cartItems = data;
+            if (cartItems.length === 0) {
+                $("#cartSummary").html("<p>Your cart is empty.</p>");
+                return;
+            }
 
-  // CARD VALIDATION
-  if (!/^\d{16}$/.test(cardNumber)) {
-    alert("❌ Card number must be 16 digits");
-    return;
-  }
+            let html = "";
+            totalAmount = 0;
 
-  if (!/^\d{3}$/.test(cvv)) {
-    alert("❌ CVV must be a 3-digit number");
-    return;
-  }
+            cartItems.forEach(item => {
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.PerfumeImg}" width="80" />
+                        <div>${item.PerfumeName}</div>
+                        <div>Qty: ${item.CartQty}</div>
+                        <div>Price: ₹${item.TotalPrice}</div>
+                    </div>
+                `;
+                totalAmount += item.TotalPrice;
+            });
 
-  // EXPIRY VALIDATION (YYYY-MM format from <input type="month">)
-  if (!/^\d{4}-\d{2}$/.test(expiry)) {
-    alert("❌ Please enter a valid expiry date (YYYY-MM)");
-    return;
-  }
+            $("#cartSummary").html(html);
+            $("#totalAmount").text(`Total: ₹${totalAmount}`);
+        },
+        error: function () {
+            alert("Failed to load cart.");
+        }
+    });
 
-  const [expiryYear, expiryMonth] = expiry.split("-").map(Number);
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1; // getMonth() is 0-based
+    // On payment button click
+    $("#pay-btn").click(function () {
+        if (cartItems.length === 0) {
+            alert("Cart is empty.");
+            return;
+        }
 
-  if (expiryYear < currentYear || (expiryYear === currentYear && expiryMonth < currentMonth)) {
-    alert("❌ Card has expired");
-    return;
-  }
+        const billDto = {
+            UserID: parseInt(userId),
+            BillAmt: totalAmount,
+            Details: cartItems.map(item => ({
+                PerfumeID: item.PerfumeID,
+                Quantity: item.CartQty,
+                UnitPrice: item.PerfumePrice,
+                TotalPrice: item.TotalPrice
+            }))
+        };
 
-  // ALL VALID
-  alert(`✅ Thank you for your purchase, ${userName}!\nOrder confirmation email will be sent to: ${userEmail}`);
-  window.location.href="bill.html";
-  // Clear input fields
-  document.getElementById('cardnumber').value = '';
-  document.getElementById('cvv').value = '';
-  document.getElementById('cardexpiry').value = '';
-
-  // Clear user's cart after successful payment
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user) {
-    const cartKey = `cart_${user.email}`;
-    localStorage.setItem(cartKey, JSON.stringify([])); 
-    localStorage.removeItem("cart"); 
-  }
-});
-
-
-
-window.addEventListener('DOMContentLoaded', () => {
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user) {
-    document.getElementById('user-info').textContent = `${user.name}`;
-  }
+        // Call bill/add API
+        $.ajax({
+            url: "http://localhost:60565/api/bill/add",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(billDto),
+            success: function (response) {
+                // Clear cart after successful bill
+                $.ajax({
+                    url: `http://localhost:60565/api/cart/clear/user/${userId}`,
+                    type: "DELETE",
+                    success: function () {
+                        alert("Payment successful! Bill ID: " + response.BillID);
+                        window.location.href = "/bill.html?billId=" + response.BillID;
+                    },
+                    error: function () {
+                        alert("Payment successful, but failed to clear cart.");
+                    }
+                });
+            },
+            error: function () {
+                alert("Payment failed. Please try again.");
+            }
+        });
+    });
 });

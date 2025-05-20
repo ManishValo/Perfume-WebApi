@@ -36,18 +36,24 @@ $(document).ready(function () {
         cartItems.forEach(item => {
           totalAmount += item.TotalPrice;
 
-          const card = `
-            <div class="cart-card" style="display:flex;gap:1rem;border:1px solid #ccc;padding:1rem;margin-bottom:1rem;">
-              <img src="/images/${item.PerfumeImg}" alt="${item.PerfumeName}" style="width:100px;height:auto;">
-              <div>
-                <h3>${item.PerfumeName}</h3>
-                <p>Price: ₹${item.PerfumePrice}</p>
-                <p>Quantity: ${item.CartQty}</p>
-                <p>Total: ₹${item.TotalPrice}</p>
-                <button class="remove-btn" data-id="${item.CartID}">Remove</button>
-              </div>
-            </div>
-          `;
+              const card = `
+      <div class="cart-card" style="display:flex;gap:1rem;border:1px solid #ccc;padding:1rem;margin-bottom:1rem;">
+        <img src="/images/${item.PerfumeImg}" alt="${item.PerfumeName}" style="width:100px;height:100px; object-fit: contain;">
+        <div>
+          <h3>${item.PerfumeName}</h3>
+          <p>Price: ₹${item.PerfumePrice}</p>
+          <div>
+            Quantity:
+            <button class="qty-btn decrease" data-id="${item.CartID}" data-qty="${item.CartQty}" data-price="${item.PerfumePrice}">−</button>
+            <span class="cart-qty">${item.CartQty}</span>
+            <button class="qty-btn increase" data-id="${item.CartID}" data-qty="${item.CartQty}" data-price="${item.PerfumePrice}">+</button>
+          </div>
+          <p>Total: ₹${item.TotalPrice}</p>
+          <button class="remove-btn" data-id="${item.CartID}" style="background-color: #ff4d4d; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 5px;">Remove</button>
+        </div>
+      </div>
+    `;
+
 
           container.append(card);
         });
@@ -64,6 +70,45 @@ $(document).ready(function () {
 
     });
   }
+
+  // Quantity +/− buttons
+  $(document).on("click", ".qty-btn", function () {
+    const cartId = $(this).data("id");
+    let qty = parseInt($(this).data("qty"));
+    const unitPrice = parseFloat($(this).data("price"));
+    const isIncrease = $(this).hasClass("increase");
+
+    if (isIncrease) {
+      qty += 1;
+    } else {
+      if (qty <= 1) {
+        alert("Minimum quantity is 1.");
+        return;
+      }
+      qty -= 1;
+    }
+
+    const updatedCart = {
+      CartID: cartId,
+      CartQty: qty,
+      TotalPrice: qty * unitPrice
+    };
+
+    $.ajax({
+      url: "http://localhost:60565/api/cart/update",
+      method: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify(updatedCart),
+      success: function () {
+        loadCart(); // Refresh cart UI
+        updateCartIconFromServer(); // Refresh cart count
+      },
+      error: function () {
+        alert("Failed to update cart quantity.");
+      }
+    });
+  });
+
 
   $(document).on("click", ".remove-btn", function () {
     const cartId = $(this).data("id");

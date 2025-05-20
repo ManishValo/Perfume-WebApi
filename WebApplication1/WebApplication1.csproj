@@ -211,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiControllers\BillDetailsController.cs" />
+    <Compile Include="ApiControllers\BillDTO.cs" />
     <Compile Include="ApiControllers\CartController.cs" />
     <Compile Include="ApiControllers\CategoryController.cs" />
     <Compile Include="ApiControllers\PerfumeController.cs" />
