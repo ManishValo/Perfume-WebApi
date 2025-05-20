@@ -5,7 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Form</title>
-  <!-- <link rel="stylesheet" href="style.css" /> -->
   <link rel="stylesheet" href="./Css/paymentgateway.css" />
 </head>
 
@@ -36,8 +35,8 @@
   <main class="container">
     <h1>Payment Form</h1>
     <div class="form">
-        <p id="user-info" style="margin-bottom: 10px;"></p>
-        <div class="left">
+      <p id="user-display-info" style="margin-bottom: 10px;"></p>
+      <div class="left">
         <form id="payment-form">
           <label for="full-name">Full Name:</label>
           <input type="text" name="name" id="full-name" placeholder="Enter Full Name" />
@@ -58,6 +57,9 @@
               <input type="text" id="pincode" placeholder="Pincode" />
             </div>
           </div>
+
+          <label for="contact">Contact Number:</label>
+          <input type="text" id="contact" placeholder="Contact Number" />
       </div>
 
       <div class="right">
@@ -77,8 +79,7 @@
         <input type="text" id="cvv" placeholder="CVV" />
 
         <label for="cardexpiry">Card Expiry Details:</label>
-        <input type="month" id="cardexpiry" min="2025-05">
-        <!-- <input type="date" id="cardexpiry" /> -->
+        <input type="month" id="cardexpiry" min="2025-05" />
 
         <label for="otp">OTP:</label>
         <input type="text" id="otp" placeholder="Enter OTP" />

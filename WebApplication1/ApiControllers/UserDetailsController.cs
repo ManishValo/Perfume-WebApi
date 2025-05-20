@@ -98,13 +98,39 @@ namespace WebApplication1.ApiControllers
 
         }
 
+        //[HttpPut]
+        //[Route("update-contact/{email}")]
+        //public IHttpActionResult UpdateContactDetails(string email, UserDetail updatedDetails)
+        //{
+        //    try
+        //    {
+        //        var user = db.UserDetails.FirstOrDefault(u => u.UserEmail == email);
+        //        if (user == null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        user.MobileNo = updatedDetails.MobileNo;
+        //        user.Address = updatedDetails.Address;
+        //        user.City = updatedDetails.City;
+        //        user.Pincode = updatedDetails.Pincode;
+
+        //        db.SaveChanges();
+        //        return Ok("Contact details updated successfully.");
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return InternalServerError(new Exception("Failed to update user details."));
+        //    }
+        //}
+
         [HttpPut]
-        [Route("update-contact/{email}")]
-        public IHttpActionResult UpdateContactDetails(string email, UserDetail updatedDetails)
+        [Route("update-contact/{id}")]
+        public IHttpActionResult UpdateContactDetails(int id, [FromBody] UserDetail updatedDetails)
         {
             try
             {
-                var user = db.UserDetails.FirstOrDefault(u => u.UserEmail == email);
+                var user = db.UserDetails.FirstOrDefault(u => u.UserID == id);
                 if (user == null)
                 {
                     return NotFound();
@@ -123,6 +149,8 @@ namespace WebApplication1.ApiControllers
                 return InternalServerError(new Exception("Failed to update user details."));
             }
         }
+
+
 
 
         [HttpDelete]
