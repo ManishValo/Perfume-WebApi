@@ -37,12 +37,10 @@
           <li><a href="#">Contact Us</a></li>
           <li class="dropdown">
             <a href="#">Categories <i class="fa fa-caret-down"></i></a>
-            <div class="dropdown-content">
-              <a href="#" onclick="showCategory('everyday')">EveryDay</a>
-              <a href="#" onclick="showCategory('luxury')">Luxury</a>
-              <a href="#" onclick="showCategory('nightScents')">Night Scents</a>
-              <a href="#" onclick="showCategory('bodyMists')">Body Mists</a>
+            <div class="dropdown-content" id="category-dropdown">
+              <!-- Categories will be injected here -->
             </div>
+
           </li>
         </ul>
       </nav>
@@ -52,12 +50,15 @@
       </div>
 
     </div>
-    <div class="middle" id="cart-section">
+    <div class="middle" id="cart-section" style="position: relative;">
       <a href="./cart.html"><i class="fa fa-cart-plus"></i></a>
+      <span id="cart-count"
+        style="display:none; position: absolute; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; top: -13px; right: 14px;"></span>
     </div>
+
     <div class="right" id="user-section">
-        
-    <!-- This div will be dynamically updated by JS -->
+
+      <!-- This div will be dynamically updated by JS -->
     </div>
 
 

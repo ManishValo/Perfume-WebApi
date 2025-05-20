@@ -1,37 +1,55 @@
+let allFetchedProducts = []; // Global array for search
+
 // --------------------- INITIAL PAGE LOAD ---------------------
 window.addEventListener('DOMContentLoaded', () => {
   const userJson = sessionStorage.getItem("loggedInUser");
   const user = userJson ? JSON.parse(userJson) : null;
 
   updateUserNav(user);
-  updateCartIcon();
-  showCategory('everyday'); // Default category
+  updateCartIconFromServer();
+  fetchAndRenderCategories(); // Fetch and build dropdown
 });
 
+// --------------------- FETCH AND RENDER CATEGORIES ---------------------
+function fetchAndRenderCategories() {
+  $.ajax({
+    url: "http://localhost:60565/api/category",
+    method: "GET",
+    success: function (categories) {
+      const dropdown = document.getElementById("category-dropdown");
+      dropdown.innerHTML = "";
 
-// --------------------- CATEGORY SWITCHING ---------------------
-function showCategory(category) {
-  const categoryMap = {
-    everyday: 1,
-    luxury: 2,
-    nightScents: 3,
-    bodyMists: 4
-  };
+      categories.forEach((cat, index) => {
+        const anchor = document.createElement("a");
+        anchor.href = "#";
+        anchor.textContent = cat.CategoryName;
+        anchor.onclick = () => showCategory(cat.CategoryID);
+        dropdown.appendChild(anchor);
 
-  const catId = categoryMap[category];
-  if (!catId) {
-    console.error("Invalid category:", category);
+        if (index === 0) showCategory(cat.CategoryID); // Default load
+      });
+
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching categories:", error);
+      document.getElementById("category-dropdown").innerHTML = "<a href='#'>Failed to load categories</a>";
+    }
+  });
+}
+function showCategory(categoryId) {
+  if (!categoryId || isNaN(categoryId)) {
+    console.error("Invalid category ID:", categoryId);
     return;
   }
 
   $.ajax({
-    url: `http://localhost:60565/api/perfume/category/${catId}`,
+    url: `http://localhost:60565/api/perfume/category/${categoryId}`,
     method: "GET",
-    success: function(products) {
-      console.log(products);
+    success: function (products) {
+      allFetchedProducts = products;
       displayProducts(products);
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
       console.error("Error loading category:", error);
       $("#product-container").html("<p>Failed to load products.</p>");
     }
@@ -58,29 +76,23 @@ function displayProducts(products) {
     </div>
   `).join(""));
 
-  // Attach click handler using event delegation
+  // Attach event handler for Add to Cart
   container.off('click', '.add-to-cart-btn');
-  container.on('click', '.add-to-cart-btn', function() {
+  container.on('click', '.add-to-cart-btn', function () {
     const productId = parseInt($(this).data('id'));
     const product = products.find(p => p.PerfumeID === productId);
     addToCart(product);
   });
 }
 
-
 // --------------------- ADD TO CART ---------------------
-
-// Utility: Get Logged-in User from sessionStorage
 function getLoggedInUser() {
   const userJson = sessionStorage.getItem("loggedInUser");
-//   console.log(userJson)
   return userJson ? JSON.parse(userJson) : null;
 }
 
 function addToCart(product) {
-    // console.log(product)
   const user = getLoggedInUser();
-//   console.log(user)
   if (!user) return alert("Please login to add items to cart.");
 
   const cartItem = {
@@ -94,16 +106,13 @@ function addToCart(product) {
     UserID: user.UserID
   };
 
-//   console.log("Adding to cart:", cartItem);
-
   $.ajax({
     url: 'http://localhost:60565/api/cart/add',
     method: 'POST',
     data: JSON.stringify(cartItem),
     contentType: 'application/json',
     success: function () {
-      // Give a short delay to ensure DB operation is completed
-        updateCartIcon();
+      updateCartIconFromServer();
     },
     error: function () {
       alert("Failed to add item to cart.");
@@ -111,50 +120,54 @@ function addToCart(product) {
   });
 }
 
-
 // --------------------- UPDATE CART BADGE ---------------------
-function updateCartIcon() {
+function updateCartIconFromServer() {
   const userJson = sessionStorage.getItem("loggedInUser");
   const user = userJson ? JSON.parse(userJson) : null;
-  const cartKey = user ? `cart_${user.email}` : null;
-  const cart = cartKey ? JSON.parse(localStorage.getItem(cartKey)) || [] : [];
 
   const cartIcon = document.querySelector('.fa-cart-plus');
   if (!cartIcon) return;
 
   let countBadge = document.getElementById('cart-count');
 
-  if (!user || cart.length === 0) {
+  if (!user) {
     cartIcon.style.display = 'none';
     if (countBadge) countBadge.style.display = 'none';
     return;
   }
 
-  cartIcon.style.display = 'inline-block';
+  $.ajax({
+    url: `http://localhost:60565/api/cart/user/${user.UserID}`,
+    method: 'GET',
+    success: function (cartItems) {
+      const count = cartItems.reduce((total, item) => total + item.CartQty, 0);
+      cartIcon.style.display = 'inline-block';
 
-  if (!countBadge) {
-    countBadge = document.createElement('span');
-    countBadge.id = 'cart-count';
-    countBadge.style.cssText = `
-      background: red;
-      color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 12px;
-      position: absolute;
-      top: -8px;
-      right: -8px;
-    `;
-    cartIcon.style.position = 'relative';
-    cartIcon.appendChild(countBadge);
-  }
+      if (!countBadge) {
+        countBadge = document.createElement('span');
+        countBadge.id = 'cart-count';
+        countBadge.style.cssText = `
+          background: red;
+          color: white;
+          border-radius: 50%;
+          padding: 2px 6px;
+          font-size: 12px;
+          position: absolute;
+          top: -8px;
+          right: -8px;
+        `;
+        cartIcon.style.position = 'relative';
+        cartIcon.appendChild(countBadge);
+      }
 
-  countBadge.style.display = 'inline-block';
-  countBadge.innerText = cart.length;
+      countBadge.style.display = 'inline-block';
+      countBadge.innerText = count;
+    }
+  });
 }
 
 
-// --------------------- UPDATE NAVBAR ---------------------
+// --------------------- NAVBAR USER STATE ---------------------
 function updateUserNav(user) {
   const userSection = document.getElementById("user-section");
 
@@ -171,7 +184,6 @@ function updateUserNav(user) {
     `;
   }
 }
-
 
 // --------------------- LOGOUT ---------------------
 function logout() {
@@ -190,21 +202,24 @@ function logout() {
   }
 }
 
-
 // --------------------- SEARCH PRODUCTS ---------------------
 function searchProducts(event) {
   const query = event.target.value.toLowerCase();
-  const allProducts = [...everydayPerfumes, ...luxuryPerfumes, ...bodyMists, ...nightScents];
-  const filtered = allProducts.filter(product =>
-    product.name.toLowerCase().includes(query) ||
-    product.description.toLowerCase().includes(query)
+
+  if (!query.trim()) {
+    displayProducts(allFetchedProducts); // Show current category products
+    return;
+  }
+
+  const filtered = allFetchedProducts.filter(product =>
+    product.PerfumeName.toLowerCase().includes(query) ||
+    product.PerfumeDescription.toLowerCase().includes(query)
   );
 
   displayProducts(filtered);
 }
 
 document.getElementById('search-input')?.addEventListener('input', searchProducts);
-
 
 // --------------------- CHECKOUT VALIDATION ---------------------
 document.getElementById("checkout-btn")?.addEventListener("click", () => {
@@ -217,13 +232,19 @@ document.getElementById("checkout-btn")?.addEventListener("click", () => {
     return;
   }
 
-  const cartKey = `cart_${user.email}`;
-  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  $.ajax({
+    url: `http://localhost:60565/api/cart/user/${user.UserID}`,
+    method: 'GET',
+    success: function (cartItems) {
+      if (cartItems.length === 0) {
+        alert("🛒 Your cart is empty. Please add some products before checking out.");
+        return;
+      }
 
-  if (cart.length === 0) {
-    alert("🛒 Your cart is empty. Please add some products before checking out.");
-    return;
-  }
-
-  window.location.href = "./checkout.html";
+      window.location.href = "./checkout.html";
+    },
+    error: function () {
+      alert("Failed to validate cart.");
+    }
+  });
 });

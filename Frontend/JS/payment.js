@@ -53,7 +53,7 @@ document.getElementById('pay-btn').addEventListener('click', function () {
 
   // ALL VALID
   alert(`✅ Thank you for your purchase, ${userName}!\nOrder confirmation email will be sent to: ${userEmail}`);
-
+  window.location.href="bill.html";
   // Clear input fields
   document.getElementById('cardnumber').value = '';
   document.getElementById('cvv').value = '';

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -27,12 +26,24 @@ namespace WebApplication1.ApiControllers
         [Route("user/{userId:int}")]
         public IHttpActionResult GetCartByUserId(int userId)
         {
-            var userCart = db.Carts.Where(c => c.UserID == userId).ToList();
-            if (userCart == null || userCart.Count == 0)
-                return NotFound();
-
+            var userCart = db.Carts
+                .Where(c => c.UserID == userId)
+                .Select(c => new
+                {
+                    c.CartID,
+                    c.UserID,
+                    c.PerfumeID,
+                    c.CartQty,
+                    c.TotalPrice,
+                    c.Perfume.PerfumeName,
+                    c.Perfume.PerfumeImg,
+                    c.Perfume.PerfumePrice
+                })
+                .ToList();
+           
             return Ok(userCart);
         }
+
 
         // POST: api/cart/add
         [HttpPost]
@@ -41,9 +52,22 @@ namespace WebApplication1.ApiControllers
         {
             try
             {
-                db.Carts.Add(cart);
+                var existingCartItem = db.Carts.FirstOrDefault(c =>
+                    c.UserID == cart.UserID && c.PerfumeID == cart.PerfumeID);
+
+                if (existingCartItem != null)
+                {
+                    // Update quantity and total price
+                    existingCartItem.CartQty += cart.CartQty;
+                    existingCartItem.TotalPrice += cart.TotalPrice;
+                }
+                else
+                {
+                    db.Carts.Add(cart);
+                }
+
                 db.SaveChanges();
-                return Ok("Item added to cart.");
+                return Ok("Item added or updated in cart.");
             }
             catch (Exception)
             {
